@@ -2,16 +2,21 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  outline: none;
+  text-decoration: none;
+  user-select: none;
 }
 
 body,
 input,
 textarea,
 button {
-  font-family: 'Inter', serif;
+  font-family: var(font-family);
 }

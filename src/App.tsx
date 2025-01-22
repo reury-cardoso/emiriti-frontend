@@ -1,8 +1,10 @@
+import { Router } from './router';
+
 function App() {
   return (
-    <div>
-      <h1 className='text-red-950 text-[50px]'>My React App</h1>
-    </div>
+    <main className='w-screen bg-[#FAFAFA] pb-[5.4rem]'>
+      <Router />
+    </main>
   );
 }
 
