@@ -22,18 +22,10 @@ function ProductCarousel({ products }: ProductCarouselProps) {
       <Swiper
         slidesPerView={2}
         spaceBetween={16}
-        navigation={true}
+        navigation={false}
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination]}
-        style={
-          {
-            '--swiper-pagination-bottom': '-4px',
-            paddingBottom: '28px',
-            '--swiper-navigation-size': '15px',
-            "--swiper-navigation-top-offset": "97%",
-            "--swiper-navigation-sides-offset":"30%"
-          } as React.CSSProperties
-        }
+        style={{ '--swiper-pagination-bottom': '-6px', paddingBottom: '28px' } as React.CSSProperties}
         className='mySwiper'
       >
         {products.map((product, index) => (

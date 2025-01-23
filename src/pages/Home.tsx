@@ -1,7 +1,4 @@
 import { Banners } from '../components/Banners';
-import imageMain from '../assets/cardOneHome.svg';
-import imageSecundary from '../assets/cardTwoHome.svg';
-import imageTertiary from '../assets/cardThreeHome.svg';
 import ProductCarousel from '../components/ProductCarousel';
 import { useNavigate } from 'react-router-dom';
 import { ToyCard } from '../components/ToyCard';
@@ -39,6 +36,10 @@ const products = [
     image: 'https://www.oliberal.com/image/contentid/policy:1.688370:1685640122/MiritiFest.jpg?f=3x2&$p$f=4f4fd6b',
   },
 ];
+
+const imageMain = 'https://res.cloudinary.com/emiriti/image/upload/cardOneHome_stiuax.svg';
+const imageSecundary = 'https://res.cloudinary.com/emiriti/image/upload/cardTwoHome_nqkqqc.svg';
+const imageTertiary = 'https://res.cloudinary.com/emiriti/image/upload/cardThreeHome_kff8ou.svg';
 
 export default function PageHome() {
   const navigate = useNavigate();
