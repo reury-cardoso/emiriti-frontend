@@ -1,10 +1,19 @@
+import { ArtisansProvider } from './context/ArtisansContext';
+import { BannersProvider } from './context/BannersContext';
+import { ProductsProvider } from './context/ProductsContext';
 import { Router } from './router';
 
 function App() {
   return (
-    <main className='w-screen bg-[#FAFAFA] pb-[5.4rem]'>
-      <Router />
-    </main>
+    <ArtisansProvider>
+      <ProductsProvider>
+        <BannersProvider>
+          <main className='w-screen bg-[#FAFAFA] pb-[5.4rem]'>
+            <Router />
+          </main>
+        </BannersProvider>
+      </ProductsProvider>
+    </ArtisansProvider>
   );
 }
 
