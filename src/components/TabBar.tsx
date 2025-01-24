@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { House, Menu, Store, UserSearch } from 'lucide-react';
-import { useNavigation } from '../Context/NavigationContext';
+import { useNavigation } from '../context/NavigationContext';
 
 const TabBarItem = memo(({ isActive, label, icon: Icon, onClick }: any) => (
   <div

@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { NavigationProvider } from './Context/NavigationContext';
+import { NavigationProvider } from './context/NavigationContext';
 import { SearchBar } from './components/SearchBar';
 import { TabBar } from './components/TabBar';
 import ScrollToTop from './components/ScrollToTop';
