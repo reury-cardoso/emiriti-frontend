@@ -1,11 +1,10 @@
 import { Banners } from '../components/Banners';
-import imageMain from '../assets/frame.svg';
 import { ProfileCard } from '../components/ProfileCard';
 
 export default function PageArtisans() {
   return (
     <>
-      <Banners urlMain={imageMain} />
+      <Banners oneBanner='urlMain' />
 
       <section className='mx-auto w-[90%] pb-[24px] pt-[8px]'>
         <div className='flex justify-between pb-[16px]'>

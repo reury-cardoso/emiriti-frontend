@@ -8,8 +8,8 @@ type Banner = {
   urlMain: string;
   urlSecondary: string;
   urlTertiary: string;
-  isActive: boolean;
   updatedAt: string;
+  [key: string]: string;
 };
 
 type BannersContextData = {
