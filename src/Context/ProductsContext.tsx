@@ -6,11 +6,23 @@ type Product = {
   id: string;
   name: string;
   description: string;
+  price: number;
+  artisanId: string;
+  createdAt: string;
+  updatedAt: string;
   images: { url: string }[];
+  artisan: { name: string };
+};
+
+type Meta = {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
 };
 
 type ProductsContextData = {
-  products: Product[] | undefined;
+  products: { data: Product[]; meta: Meta } | undefined;
   isLoading: boolean;
   search: (query: string) => void;
 };
@@ -18,17 +30,16 @@ type ProductsContextData = {
 const ProductsContext = createContext<ProductsContextData>({} as ProductsContextData);
 
 export const ProductsProvider = ({ children }: { children: ReactNode }) => {
-  const { data: products, isLoading } = useQuery({ queryKey: ['products'], queryFn: () => getPaginatedProducts(1, 10) });
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => getPaginatedProducts(1, 5),
+  });
 
   const search = async (query: string) => {
     await searchProducts(query);
   };
 
-  return (
-    <ProductsContext.Provider value={{ products, isLoading, search }}>
-      {children}
-    </ProductsContext.Provider>
-  );
+  return <ProductsContext.Provider value={{ products, isLoading, search }}>{children}</ProductsContext.Provider>;
 };
 
 export const useProducts = () => useContext(ProductsContext);

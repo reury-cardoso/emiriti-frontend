@@ -5,8 +5,11 @@ import { getActiveBanner } from '../services/banners';
 type Banner = {
   id: string;
   title: string;
-  imageUrl: string;
+  urlMain: string;
+  urlSecondary: string;
+  urlTertiary: string;
   isActive: boolean;
+  updatedAt: string;
 };
 
 type BannersContextData = {
