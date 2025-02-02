@@ -7,9 +7,9 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { ToyCard } from './ToyCard';
 
 interface Product {
-  image: string;
-  title: string;
-  seller: string;
+  images: { url: string }[];
+  name: string;
+  artisan: { name: string };
 }
 
 interface ProductCarouselProps {
@@ -30,7 +30,7 @@ function ProductCarousel({ products }: ProductCarouselProps) {
       >
         {products.map((product, index) => (
           <SwiperSlide key={index}>
-            <ToyCard src={product.image} toyName={product.title} artisanName={product.seller} />
+            <ToyCard src={product.images[0].url} toyName={product.name} artisanName={product.artisan.name} />
           </SwiperSlide>
         ))}
       </Swiper>
