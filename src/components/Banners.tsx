@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useBanners } from '../context/BannersContext';
 
-export function Banners({ oneBanner }: { oneBanner: string }) {
+export function Banners({ oneBanner }: { oneBanner?: string }) {
   const { activeBanner, isError, refetch } = useBanners();
 
   const [mainLoaded, setMainLoaded] = useState(false);

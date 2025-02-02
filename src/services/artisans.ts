@@ -1,7 +1,7 @@
 import { api } from './api';
 
-export const getAllArtisans = async () => {
-  const { data } = await api.get('/artisans');
+export const getAllArtisans = async ({ pageParam = 1 }) => {
+  const { data } = await api.get('/artisans', { params: { page: pageParam, limit: 10 } });
   return data;
 };
 

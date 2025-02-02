@@ -3,6 +3,7 @@ import ProductCarousel from '../components/ProductCarousel';
 import { useNavigate } from 'react-router-dom';
 import { ToyCard } from '../components/ToyCard';
 import { ProfileCard } from '../components/ProfileCard';
+import { useArtisans } from '../context/ArtisansContext';
 
 const products = [
   {
@@ -37,15 +38,12 @@ const products = [
   },
 ];
 
-const imageMain = 'https://res.cloudinary.com/emiriti/image/upload/cardOneHome_stiuax.svg';
-const imageSecundary = 'https://res.cloudinary.com/emiriti/image/upload/cardTwoHome_nqkqqc.svg';
-const imageTertiary = 'https://res.cloudinary.com/emiriti/image/upload/cardThreeHome_kff8ou.svg';
-
 export default function PageHome() {
   const navigate = useNavigate();
+  const { artisans } = useArtisans();
   return (
     <>
-      <Banners urlMain={imageMain} urlSecundary={imageSecundary} urlTertiary={imageTertiary} />
+      <Banners />
       <section className='mx-auto w-[90%] pb-[24px] pt-[8px]'>
         <div className='flex justify-between pb-[16px]'>
           <h2 className='text-[1.5rem] font-bold text-[#424242]'>Brinquedos</h2>
@@ -77,10 +75,12 @@ export default function PageHome() {
         </div>
 
         <div className='flex flex-col gap-4'>
-          <ProfileCard />
-          <ProfileCard />
-          <ProfileCard />
-          <ProfileCard />
+          {artisans
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4)
+            .map((artisan) => (
+              <ProfileCard key={artisan.id} name={artisan.name} location={artisan.location} photo={artisan.photo} />
+            ))}
         </div>
       </section>
     </>

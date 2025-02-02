@@ -7,7 +7,7 @@ const TabBarItem = memo(({ isActive, label, icon: Icon, onClick }: any) => (
     onClick={onClick}
     className={`flex w-full flex-col items-center gap-[4px] rounded-tl-[10px] rounded-br-[0] rounded-tr-[10px] rounded-bl-[0] px-[24px] py-[20px] text-[12px] font-medium ${
       isActive ? 'text-[#0033EC]' : 'text-[#636161] '
-    } transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg`}
+    } transition-transform duration-300 ease-in-out hover:scale-105`}
   >
     <Icon />
     <span>{label}</span>

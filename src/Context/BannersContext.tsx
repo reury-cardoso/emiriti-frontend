@@ -8,6 +8,8 @@ type Banner = {
   urlMain: string;
   urlSecondary: string;
   urlTertiary: string;
+  urlArtisan: string;
+  urlProduct: string;
   updatedAt: string;
   [key: string]: string;
 };
@@ -30,9 +32,7 @@ export const BannersProvider = ({ children }: { children: ReactNode }) => {
   } = useQuery({ queryKey: ['activeBanner'], queryFn: getActiveBanner });
 
   return (
-    <BannersContext.Provider value={{ activeBanner, isLoading, isError, refetch }}>
-      {children}
-    </BannersContext.Provider>
+    <BannersContext.Provider value={{ activeBanner, isLoading, isError, refetch }}>{children}</BannersContext.Provider>
   );
 };
 
