@@ -11,7 +11,7 @@ export function ToyCard({ src, toyName, artisanName, topRank }: ToyCardProps) {
   return (
     <div className="relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg active:scale-98">
       {topRank && topRank <= 4 && (
-        <div className="absolute top-2 left-2 z-10 bg-white/80 text-gray-800 px-3 py-1 rounded-full shadow-md text-sm font-semibold">
+        <div className="absolute top-2 left-2 z-10 bg-blue-500/80 text-white px-3 py-1 rounded-full shadow-md text-sm font-semibold">
           TOP {topRank}
         </div>
       )}
