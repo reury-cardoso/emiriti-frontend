@@ -18,7 +18,7 @@ export function TabBar() {
   const { currentPage, navigate } = useNavigation();
 
   return (
-    <footer className='fixed bottom-0 z-[100000] flex w-full select-none justify-between border-t bg-[#FCFCFC] shadow-[0px_-2px_12px_0px_rgba(0,0,0,0.08)]'>
+    <footer className='fixed bottom-0 z-[997] flex w-full select-none justify-between border-t bg-[#FCFCFC] shadow-[0px_-2px_12px_0px_rgba(0,0,0,0.08)]'>
       <TabBarItem isActive={currentPage === '/'} label='Home' icon={House} onClick={() => navigate('/')} />
       <TabBarItem
         isActive={currentPage === '/products'}
