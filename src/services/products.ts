@@ -13,4 +13,9 @@ export const getPaginatedProducts = async (page: number, limit: number) => {
 export const fetchProductsByView = async () => {
   const { data } = await api.get('/products/trend');
   return data;
-}
+};
+
+export const getProductById = async (id: string) => {
+  const { data } = await api.get(`/products/${id}`);
+  return data;
+};

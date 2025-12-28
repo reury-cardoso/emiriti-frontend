@@ -122,7 +122,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
       <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm' />
-          <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col rounded-t-3xl bg-background outline-none'>
+          <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col overflow-hidden rounded-t-3xl bg-background outline-none'>
             <VisuallyHidden>
               <Drawer.Title>Detalhes do Artesão</Drawer.Title>
               <Drawer.Description>Perfil completo de {name}</Drawer.Description>
@@ -136,7 +136,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
               }}
             >
               {/* Header com drag indicator */}
-              <div className='sticky top-0 z-10 flex items-center justify-center bg-gradient-to-b from-background to-background/95 pb-6 pt-2 backdrop-blur-sm'>
+              <div className='sticky top-0 z-10 flex items-center justify-center bg-gradient-to-b from-background to-background/95 pb-6 pt-5 backdrop-blur-sm'>
                 <div className='flex gap-1.5'>
                   <span className='h-1 w-5 rounded-full bg-gray-300'></span>
                   <span className='h-1 w-5 rounded-full bg-gray-300'></span>

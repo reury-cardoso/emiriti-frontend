@@ -4,6 +4,7 @@ import { NavigationProvider } from './context/NavigationContext';
 import { SearchBar } from './components/SearchBar';
 import { TabBar } from './components/TabBar';
 import ScrollToTop from './components/ScrollToTop';
+import { GlobalDrawers } from './components/GlobalDrawers';
 
 const PageHome = lazy(() => import('./pages/Home'));
 const PageProducts = lazy(() => import('./pages/Products'));
@@ -23,6 +24,7 @@ export function Router() {
           <Route path='/artisans' element={<PageArtisans />} />
           <Route path='/more' element={<PageMore />} />
         </Routes>
+        <GlobalDrawers />
       </NavigationProvider>
     </BrowserRouter>
   );

@@ -78,7 +78,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
       <div className='space-y-2 p-3'>
         <div>
           <h3 className='truncate text-base font-semibold text-gray-900'>{product.name}</h3>
-          <p className='mt-0.5 truncate text-sm text-gray-600'>{product.artisan.name}</p>
+          {product.artisan && <p className='mt-0.5 truncate text-sm text-gray-600'>{product.artisan.name}</p>}
         </div>
 
         <button
@@ -93,7 +93,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
       <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm' />
-          <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col rounded-t-3xl bg-background outline-none'>
+          <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col overflow-hidden rounded-t-3xl bg-background outline-none'>
             <VisuallyHidden>
               <DialogTitle>Detalhes do Produto</DialogTitle>
               <DialogDescription>Informações detalhadas sobre {product.name}</DialogDescription>
@@ -107,7 +107,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
               }}
             >
               {/* Header com drag indicator */}
-              <div className='sticky top-0 z-10 flex items-center justify-center bg-background/95 pb-4 pt-2 backdrop-blur-sm'>
+              <div className='sticky top-0 z-10 flex items-center justify-center bg-background pb-4 pt-5'>
                 <div className='flex gap-1.5'>
                   <span className='h-1 w-5 rounded-full bg-gray-300'></span>
                   <span className='h-1 w-5 rounded-full bg-gray-300'></span>
@@ -148,42 +148,46 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
               </div>
 
               {/* Card do Artesão integrado */}
-              <div className='mb-6 rounded-xl border border-border bg-background p-4'>
-                <div className='flex items-center gap-3'>
-                  <div className='relative'>
-                    <img
-                      src={product.artisan.photo}
-                      alt={product.artisan.name}
-                      className='h-12 w-12 rounded-full object-cover'
-                    />
-                    <div
-                      className='absolute inset-0 rounded-full'
-                      style={{
-                        background: 'linear-gradient(135deg, #00A86B, #FF6B35)',
-                        padding: '2px',
-                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                        WebkitMaskComposite: 'xor',
-                        maskComposite: 'exclude',
-                      }}
-                    ></div>
-                  </div>
-                  <div className='flex-1'>
-                    <p className='font-semibold text-text-primary'>{product.artisan.name}</p>
-                    <p className='text-sm text-text-secondary'>Artesão de Abaetetuba</p>
+              {product.artisan && (
+                <div className='mb-6 rounded-xl border border-border bg-background p-4'>
+                  <div className='flex items-center gap-3'>
+                    <div className='relative'>
+                      <img
+                        src={product.artisan.photo}
+                        alt={product.artisan.name}
+                        className='h-12 w-12 rounded-full object-cover'
+                      />
+                      <div
+                        className='absolute inset-0 rounded-full'
+                        style={{
+                          background: 'linear-gradient(135deg, #00A86B, #FF6B35)',
+                          padding: '2px',
+                          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                          WebkitMaskComposite: 'xor',
+                          maskComposite: 'exclude',
+                        }}
+                      ></div>
+                    </div>
+                    <div className='flex-1'>
+                      <p className='font-semibold text-text-primary'>{product.artisan.name}</p>
+                      <p className='text-sm text-text-secondary'>Artesão de Abaetetuba</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Botão WhatsApp */}
-              <a
-                href={`https://wa.me/${product.artisan.whatsapp}`}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-whatsapp px-4 py-3.5 text-base font-semibold text-white shadow-card transition-all hover:bg-whatsapp/90 active:scale-95'
-              >
-                <MessageCircle size={20} />
-                Entrar em contato via WhatsApp
-              </a>
+              {product.artisan?.whatsapp && (
+                <a
+                  href={`https://wa.me/${product.artisan.whatsapp}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-whatsapp px-4 py-3.5 text-base font-semibold text-white shadow-card transition-all hover:bg-whatsapp/90 active:scale-95'
+                >
+                  <MessageCircle size={20} />
+                  Entrar em contato via WhatsApp
+                </a>
+              )}
 
               {/* Galeria da Arte */}
               <div className='mb-6'>
