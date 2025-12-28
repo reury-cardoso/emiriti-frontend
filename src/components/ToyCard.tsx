@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ImageZoom } from './ImageZoom';
 import { ArrowRight, MessageCircle, X } from 'lucide-react';
@@ -24,10 +25,21 @@ interface ProductProps {
 }
 
 export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
-  const [isOpen, setOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const [moreProducts, setMoreProducts] = useState<{ src: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isOpen = searchParams.get('product') === product.id;
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setSearchParams({ product: product.id });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -70,7 +82,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
         </div>
 
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => handleOpenChange(true)}
           className='flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF6B35] px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-[#FF6B35]/90 active:scale-95'
         >
           Ver mais
@@ -78,7 +90,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
         </button>
       </div>
 
-      <Drawer.Root open={isOpen} onOpenChange={setOpen}>
+      <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm' />
           <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col rounded-t-3xl bg-background outline-none'>
@@ -104,7 +116,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
 
               {/* Botão fechar */}
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => handleOpenChange(false)}
                 className='absolute right-4 top-8 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-text-primary/10 transition-colors hover:bg-text-primary/20'
               >
                 <X size={18} className='text-text-primary' />

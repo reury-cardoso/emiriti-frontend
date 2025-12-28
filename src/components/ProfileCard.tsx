@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, MapPin, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ToyCard } from './ToyCard';
 import { getArtisanById } from '../services/artisans';
@@ -40,10 +41,20 @@ interface Profile {
 }
 
 export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, location }: Artisan) {
-  const [isOpen, setOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [moreInfo, setMoreInfo] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isOpen = searchParams.get('artisan') === id;
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setSearchParams({ artisan: id });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -89,7 +100,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
               onClick={(e) => {
                 if (!moreInfo?.whatsapp) {
                   e.preventDefault();
-                  setOpen(true);
+                  handleOpenChange(true);
                 }
               }}
               className='flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition-colors hover:bg-[#25D366]/90 active:scale-95'
@@ -99,7 +110,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
               </svg>
             </a>
             <button
-              onClick={() => setOpen(true)}
+              onClick={() => handleOpenChange(true)}
               className='flex h-9 flex-1 items-center justify-center rounded-xl border border-gray-300 bg-white text-sm font-medium text-gray-700 transition-all hover:border-[#00A86B] hover:bg-[#F0FFF4] hover:text-[#00A86B] active:scale-95'
             >
               Ver perfil completo
@@ -108,7 +119,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
         </div>
       </div>
 
-      <Drawer.Root open={isOpen} onOpenChange={setOpen}>
+      <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm' />
           <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col rounded-t-3xl bg-background outline-none'>

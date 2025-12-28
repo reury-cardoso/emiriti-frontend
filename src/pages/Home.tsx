@@ -18,6 +18,10 @@ export default function PageHome() {
 
   const products = useMemo(() => paginatedProducts?.pages.flatMap((page) => page.data) || [], [paginatedProducts]);
 
+  const randomArtisans = useMemo(() => {
+    return [...artisans].sort(() => Math.random() - 0.5).slice(0, 4);
+  }, [artisans]);
+
   return (
     <div className='animate-fade-in'>
       <Banners />
@@ -63,18 +67,15 @@ export default function PageHome() {
         </div>
 
         <div className='flex flex-col gap-4'>
-          {artisans
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 4)
-            .map((artisan) => (
-              <MemoizedProfileCard
-                key={artisan.id}
-                id={artisan.id}
-                name={artisan.name}
-                location={artisan.location}
-                photo={artisan.photo}
-              />
-            ))}
+          {randomArtisans.map((artisan) => (
+            <MemoizedProfileCard
+              key={artisan.id}
+              id={artisan.id}
+              name={artisan.name}
+              location={artisan.location}
+              photo={artisan.photo}
+            />
+          ))}
         </div>
       </section>
     </div>
