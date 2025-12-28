@@ -1,9 +1,11 @@
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { ToyCard } from './ToyCard';
 import { ProfileCard } from './ProfileCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { getProductById } from '../services/products';
 import { getArtisanById } from '../services/artisans';
+import { useProducts } from '../context/ProductsContext';
+import { useArtisans } from '../context/ArtisansContext';
 
 interface Product {
   id: string;
@@ -40,8 +42,27 @@ export function GlobalDrawers() {
   const [product, setProduct] = useState<Product | null>(null);
   const [artisan, setArtisan] = useState<Artisan | null>(null);
 
-  // Só renderiza o GlobalDrawers se não estiver em uma página que já tem os cards
-  const shouldRenderGlobalDrawers = !['/products', '/artisans', '/'].includes(location.pathname);
+  const { paginatedProducts, productsByView } = useProducts();
+  const { artisans } = useArtisans();
+
+  // Verifica se o produto está na lista atual da página
+  const productInCurrentPage = useMemo(() => {
+    if (!productId) return false;
+    const allProducts = [...(paginatedProducts?.pages.flatMap((page) => page.data) || []), ...(productsByView || [])];
+    return allProducts.some((p) => p.id === productId);
+  }, [productId, paginatedProducts, productsByView]);
+
+  // Verifica se o artesão está na lista atual da página
+  const artisanInCurrentPage = useMemo(() => {
+    if (!artisanId) return false;
+    return artisans.some((a) => a.id === artisanId);
+  }, [artisanId, artisans]);
+
+  // Define quais drawers devem ser renderizados pelo GlobalDrawers
+  const shouldRenderProductDrawer =
+    location.pathname === '/artisans' || location.pathname === '/more' || !productInCurrentPage;
+  const shouldRenderArtisanDrawer =
+    location.pathname === '/products' || location.pathname === '/more' || !artisanInCurrentPage;
 
   useEffect(() => {
     if (productId) {
@@ -79,16 +100,12 @@ export function GlobalDrawers() {
     }
   }, [artisanId]);
 
-  // Não renderiza se já estiver em uma página que tem os cards
-  if (!shouldRenderGlobalDrawers) {
-    return null;
-  }
-
   return (
     <>
-      {/* Renderiza apenas um drawer por vez - produto tem prioridade */}
-      {product && product.id && !artisanId && <ToyCard product={product} />}
-      {artisan && artisan.id && !productId && (
+      {/* Renderiza drawer de produto apenas onde produtos não são listados nativamente */}
+      {shouldRenderProductDrawer && product && product.id && <ToyCard product={product} />}
+      {/* Renderiza drawer de artesão apenas onde artesãos não são listados nativamente */}
+      {shouldRenderArtisanDrawer && artisan && artisan.id && (
         <ProfileCard id={artisan.id} name={artisan.name} location={artisan.location} photo={artisan.photo} />
       )}
     </>
