@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface NavigationContextProps {
@@ -19,12 +19,14 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
   const navigateRouter = useNavigate();
   const location = useLocation();
 
+  const navigate = useCallback((path: string) => navigateRouter(path), [navigateRouter]);
+
   const contextValue = useMemo(
     () => ({
       currentPage: location.pathname,
-      navigate: (path: string) => navigateRouter(path),
+      navigate,
     }),
-    [location.pathname, navigateRouter]
+    [location.pathname, navigate]
   );
 
   return (

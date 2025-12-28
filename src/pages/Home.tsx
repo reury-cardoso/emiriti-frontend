@@ -5,52 +5,59 @@ import { ToyCard } from '../components/ToyCard';
 import { ProfileCard } from '../components/ProfileCard';
 import { useArtisans } from '../context/ArtisansContext';
 import { useProducts } from '../context/ProductsContext';
+import { useMemo } from 'react';
+import React from 'react';
+
+const MemoizedToyCard = React.memo(ToyCard);
+const MemoizedProfileCard = React.memo(ProfileCard);
 
 export default function PageHome() {
   const navigate = useNavigate();
   const { artisans } = useArtisans();
-  const {productsByView, paginatedProducts } = useProducts();
+  const { productsByView, paginatedProducts } = useProducts();
 
-  const products = paginatedProducts?.pages.flatMap(page => page.data) || [];
+  const products = useMemo(() => paginatedProducts?.pages.flatMap((page) => page.data) || [], [paginatedProducts]);
+
   return (
-    <>
+    <div className='animate-fade-in'>
       <Banners />
 
-      <section className='mx-auto w-[90%] pb-[24px] pt-[8px]'>
-        <div className='flex justify-between pb-[16px]'>
-          <h2 className='text-[1.5rem] font-bold text-[#424242]'>Brinquedos</h2>
-          <button onClick={() => navigate('/products')} className='text-[1rem] font-bold text-[#9F9F9F]'>
+      {/* Seção Brinquedos */}
+      <section className='mx-auto w-[90%] pb-6 pt-2'>
+        <div className='flex items-center justify-between pb-4'>
+          <h2 className='text-2xl font-bold text-text-primary'>Brinquedos</h2>
+          <button
+            onClick={() => navigate('/products')}
+            className='text-base font-semibold text-text-secondary transition-colors hover:text-amazonia'
+          >
             Ver todos
           </button>
         </div>
 
         <div>
-          <ProductCarousel products={
-            products.slice(0, 8)
-          } />
+          <ProductCarousel products={products.slice(0, 8)} />
         </div>
       </section>
 
-      <section className='mx-auto w-[90%] pb-[24px] pt-[8px]'>
-        <h2 className='pb-[16px] text-[1.5rem] font-bold text-[#424242]'>Mais Populares</h2>
+      {/* Seção Mais Populares */}
+      <section className='mx-auto w-[90%] pb-6 pt-2'>
+        <h2 className='pb-4 text-2xl font-bold text-text-primary'>Mais Populares</h2>
 
         <div className='grid grid-cols-2 gap-4'>
-          {productsByView?.slice(0, 4).map((product , index) => (
-            <ToyCard
-              key={product.id}
-              src={product.images[0].url}
-              toyName={product.name}
-              artisanName={product.artisan.name}
-              topRank={index + 1}
-            />
-          ))}
+          {productsByView
+            ?.slice(0, 4)
+            .map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)}
         </div>
       </section>
 
-      <section className='mx-auto w-[90%] pb-[24px] pt-[8px]'>
-        <div className='flex justify-between pb-[16px]'>
-          <h2 className='text-[1.5rem] font-bold text-[#424242]'>Artesãos</h2>
-          <button onClick={() => navigate('/artisans')} className='text-[1rem] font-bold text-[#9F9F9F]'>
+      {/* Seção Artesãos */}
+      <section className='mx-auto w-[90%] pb-6 pt-2'>
+        <div className='flex items-center justify-between pb-4'>
+          <h2 className='text-2xl font-bold text-text-primary'>Artesãos</h2>
+          <button
+            onClick={() => navigate('/artisans')}
+            className='text-base font-semibold text-text-secondary transition-colors hover:text-amazonia'
+          >
             Ver todos
           </button>
         </div>
@@ -60,8 +67,9 @@ export default function PageHome() {
             .sort(() => Math.random() - 0.5)
             .slice(0, 4)
             .map((artisan) => (
-              <ProfileCard
+              <MemoizedProfileCard
                 key={artisan.id}
+                id={artisan.id}
                 name={artisan.name}
                 location={artisan.location}
                 photo={artisan.photo}
@@ -69,6 +77,6 @@ export default function PageHome() {
             ))}
         </div>
       </section>
-    </>
+    </div>
   );
 }

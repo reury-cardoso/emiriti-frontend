@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import React from 'react';
+
+import { useEffect, useMemo, useCallback } from 'react';
 import ProductCarousel from '../components/ProductCarousel';
 import { ToyCard } from '../components/ToyCard';
 import { useProducts } from '../context/ProductsContext';
@@ -6,77 +8,71 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import svgAnimate from '../assets/ring-resize-white-36.svg';
 
+const MemoizedToyCard = React.memo(ToyCard);
+
 export default function PageProducts() {
-  const {
-    paginatedProducts,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-    isFetchingNextPage,
-    isError,
-    productsByView
-  } = useProducts();
+  const { paginatedProducts, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, isError, productsByView } =
+    useProducts();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-        hasNextPage &&
-        !isFetchingNextPage
-      ) {
-        fetchNextPage();
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  const handleScroll = useCallback(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  if (isError) return <p>Erro ao carregar produtos.</p>;
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
-  // Une todas as páginas em um único array de produtos
-  const products = paginatedProducts?.pages
-    ? paginatedProducts.pages.flatMap((page) => page.data)
-    : [];
+  if (isError)
+    return (
+      <div className='flex min-h-[50vh] items-center justify-center'>
+        <p className='text-text-secondary'>Erro ao carregar produtos.</p>
+      </div>
+    );
+
+  const products = useMemo(
+    () => (paginatedProducts?.pages ? paginatedProducts.pages.flatMap((page) => page.data) : []),
+    [paginatedProducts],
+  );
 
   return (
-    <>
-      <section className="mx-auto w-[90%] pb-[24px] pt-[24px]">
-        <div className="flex justify-between pb-[16px]">
-          <h2 className="text-[1.5rem] font-bold text-[#424242]">Mais Populares</h2>
+    <div className='animate-fade-in'>
+      <section className='mx-auto w-[90%] pb-6 pt-6'>
+        <div className='flex items-center justify-between pb-4'>
+          <h2 className='text-2xl font-bold text-text-primary'>Mais Populares</h2>
         </div>
         <div>
           {isLoading ? (
-            <Skeleton height={200} />
+            <Skeleton height={200} borderRadius={12} />
           ) : (
             <ProductCarousel products={productsByView || []} />
           )}
         </div>
       </section>
 
-      <section className="mx-auto w-[90%] pb-[24px] pt-[8px]">
-        <h2 className="pb-[16px] text-[1.5rem] font-bold text-[#424242]">Todos</h2>
-        <div className="grid grid-cols-2 gap-4">
+      <section className='mx-auto w-[90%] pb-6 pt-2'>
+        <h2 className='pb-4 text-2xl font-bold text-text-primary'>Todos os Produtos</h2>
+        <div className='grid grid-cols-2 gap-4'>
           {isLoading
-            ? Array.from({ length: 4 }).map((_, idx) => (
-                <Skeleton key={idx} height={200} />
+            ? Array.from({ length: 6 }).map((_, idx) => (
+                <div key={`skeleton-${idx}`} className='space-y-3'>
+                  <Skeleton height={180} borderRadius={12} />
+                  <Skeleton height={20} width='80%' borderRadius={8} />
+                  <Skeleton height={16} width='60%' borderRadius={8} />
+                  <Skeleton height={40} borderRadius={12} />
+                </div>
               ))
-            : products.map((product) => (
-                <ToyCard
-                  key={product.id}
-                  src={product.images[0].url}
-                  toyName={product.name}
-                  artisanName={product.artisan.name}
-                />
-              ))}
+            : products.map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)}
         </div>
 
         {isFetchingNextPage && (
-          <div className="flex justify-center pt-8 pb-4">
-            <img src={svgAnimate} alt="Carregando" className="w-10 h-10" />
+          <div className='flex justify-center pb-4 pt-8'>
+            <div className='h-10 w-10 animate-spin rounded-full border-4 border-amazonia-light border-t-amazonia'></div>
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }

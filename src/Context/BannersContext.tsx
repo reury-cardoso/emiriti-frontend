@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getActiveBanner } from '../services/banners';
 
@@ -31,8 +31,17 @@ export const BannersProvider = ({ children }: { children: ReactNode }) => {
     refetch,
   } = useQuery({ queryKey: ['activeBanner'], queryFn: getActiveBanner });
 
+  const value = useMemo(() => ({
+    activeBanner,
+    isLoading,
+    isError,
+    refetch,
+  }), [activeBanner, isLoading, isError, refetch]);
+
   return (
-    <BannersContext.Provider value={{ activeBanner, isLoading, isError, refetch }}>{children}</BannersContext.Provider>
+    <BannersContext.Provider value={value}>
+      {children}
+    </BannersContext.Provider>
   );
 };
 

@@ -1,8 +1,7 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAllArtisans, getArtisanById, getProductsByArtisan } from '../services/artisans';
 
-// Tipo do artesão
 type Artisan = {
   id: string;
   name: string;
@@ -15,14 +14,12 @@ type Artisan = {
   products: Product[];
 };
 
-// Tipo do produto
 type Product = {
   id: string;
   name: string;
   price: number;
 };
 
-// Tipo do contexto
 type ArtisansContextData = {
   artisans: Artisan[];
   fetchNextPage: () => void;
@@ -47,29 +44,29 @@ export const ArtisansProvider = ({ children }: { children: ReactNode }) => {
   } = useInfiniteQuery({
     queryKey: ['artisans'],
     queryFn: getAllArtisans,
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.hasMore) {
-        return allPages.length + 1; // Próxima página
-      }
-      return undefined; // Não há mais páginas
-    },
+    getNextPageParam: (lastPage, allPages) => lastPage.hasMore ? allPages.length + 1 : undefined,
     initialPageParam: 1,
   });
 
-  const artisans = data?.pages.flatMap(page => page.data) || [];
+  const artisans = useMemo(() => data?.pages.flatMap(page => page.data) || [], [data]);
 
-  const getArtisanDetails = async (id: string) => {
-    return await getArtisanById(id);
-  };
+  const getArtisanDetails = (id: string) => getArtisanById(id);
 
-  const getArtisanProducts = async (id: string) => {
-    return await getProductsByArtisan(id);
-  };
+  const getArtisanProducts = (id: string) => getProductsByArtisan(id);
+
+  const value = useMemo(() => ({
+    artisans,
+    fetchNextPage,
+    hasNextPage: !!hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    getArtisanDetails,
+    getArtisanProducts,
+  }), [artisans, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError]);
 
   return (
-    <ArtisansContext.Provider
-      value={{ artisans, fetchNextPage, hasNextPage: !!hasNextPage, isFetchingNextPage, isLoading, isError, getArtisanDetails, getArtisanProducts }}
-    >
+    <ArtisansContext.Provider value={value}>
       {children}
     </ArtisansContext.Provider>
   );

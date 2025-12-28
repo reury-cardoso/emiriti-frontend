@@ -3,22 +3,28 @@ import { House, Menu, Store, UserSearch } from 'lucide-react';
 import { useNavigation } from '../context/NavigationContext';
 
 const TabBarItem = memo(({ isActive, label, icon: Icon, onClick }: any) => (
-  <div
+  <button
     onClick={onClick}
-    className={`flex w-full flex-col items-center gap-[4px] rounded-tl-[10px] rounded-br-[0] rounded-tr-[10px] rounded-bl-[0] px-[24px] py-[20px] text-[12px] font-medium ${
-      isActive ? 'text-[#0033EC]' : 'text-[#636161] '
-    } transition-transform duration-300 ease-in-out hover:scale-105`}
+    className='duration-250 relative flex w-full flex-col items-center gap-1.5 px-4 py-3 transition-all ease-bounce active:scale-95'
   >
-    <Icon />
-    <span>{label}</span>
-  </div>
+    {isActive && <div className='absolute left-1/2 top-0 h-0.5 w-8 -translate-x-1/2 rounded-full bg-[#00A86B]' />}
+    <Icon
+      size={24}
+      strokeWidth={2}
+      className={`transition-colors ${isActive ? 'text-[#00A86B]' : 'text-gray-500'}`}
+      fill='none'
+    />
+    <span className={`text-xs font-medium transition-colors ${isActive ? 'text-[#00A86B]' : 'text-gray-500'}`}>
+      {label}
+    </span>
+  </button>
 ));
 
 export function TabBar() {
   const { currentPage, navigate } = useNavigation();
 
   return (
-    <footer className='fixed bottom-0 z-[997] flex w-full select-none justify-between border-t bg-[#FCFCFC] shadow-[0px_-2px_12px_0px_rgba(0,0,0,0.08)]'>
+    <footer className='fixed bottom-0 z-[997] flex w-full select-none justify-between border-t border-border bg-card/95 shadow-top backdrop-blur-md'>
       <TabBarItem isActive={currentPage === '/'} label='Home' icon={House} onClick={() => navigate('/')} />
       <TabBarItem
         isActive={currentPage === '/products'}

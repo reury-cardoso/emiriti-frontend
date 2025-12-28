@@ -2,8 +2,18 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Importar fontes do Google */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather+Sans:wght@400;500;600&display=swap');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 * {
@@ -11,12 +21,114 @@
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
-  user-select: none;
 }
 
-body,
+body {
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: #fafbfc;
+  color: #1a202c;
+  min-height: 100vh;
+}
+
 input,
 textarea,
 button {
-  font-family: var(font-family);
+  font-family: inherit;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(209, 213, 219, 0.8);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.9);
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f7fafc 0%, rgba(0, 168, 107, 0.1) 50%, #f7fafc 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* Touch target mínimo */
+button,
+a {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Transições suaves */
+* {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-timing-function: ease-out;
+  transition-duration: 150ms;
+}
+
+/* Remove seleção em elementos não necessários */
+img,
+svg {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Padrão cultural amazônico (sutil) */
+.pattern-amazonia {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 168, 107, 0.03) 10px,
+    rgba(0, 168, 107, 0.03) 20px
+  );
+}
+
+/* Swiper pagination customização */
+.swiper-pagination-bullet {
+  background: #e2e8f0 !important;
+  opacity: 1 !important;
+  width: 8px !important;
+  height: 8px !important;
+  transition: all 200ms ease-out !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #00a86b !important;
+  width: 24px !important;
+  border-radius: 4px !important;
+}
+
+/* Skeleton loading do react-loading-skeleton */
+.react-loading-skeleton {
+  background-color: #f7fafc !important;
+  background-image: linear-gradient(90deg, #f7fafc 0%, rgba(0, 168, 107, 0.08) 50%, #f7fafc 100%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s linear infinite !important;
 }

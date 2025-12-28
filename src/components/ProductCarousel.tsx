@@ -7,9 +7,15 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { ToyCard } from './ToyCard';
 
 interface Product {
-  images: { url: string }[];
+  id: string;
   name: string;
-  artisan: { name: string };
+  description: string;
+  price: number;
+  artisanId: string;
+  createdAt: string;
+  updatedAt: string;
+  images: { url: string }[];
+  artisan: { id: string; name: string; photo: string; whatsapp: string };
 }
 
 interface ProductCarouselProps {
@@ -29,8 +35,11 @@ function ProductCarousel({ products }: ProductCarouselProps) {
         className='mySwiper'
       >
         {products.map((product, index) => (
-          <SwiperSlide key={index}>
-            <ToyCard src={product.images[0].url} toyName={product.name} artisanName={product.artisan.name} />
+          <SwiperSlide key={`${product.id}-${index}`}>
+            <ToyCard
+              key={`${product.id}-${index}`}
+              product={product}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

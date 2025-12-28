@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import {
   useInfiniteQuery,
   InfiniteData,
@@ -16,7 +16,7 @@ type Product = {
   createdAt: string;
   updatedAt: string;
   images: { url: string }[];
-  artisan: { name: string };
+  artisan: {id: string, name: string, photo: string, whatsapp: string };
 };
 
 type Meta = {
@@ -56,7 +56,6 @@ const ProductsContext = createContext<ProductsContextData>({} as ProductsContext
 export const ProductsProvider = ({ children }: { children: ReactNode }) => {
   const [pageSize, setPageSize] = useState(8);
 
-  // 🔹 Gerenciamento da paginação com Infinite Query
   const {
     data: paginatedProducts,
     fetchNextPage,
@@ -78,11 +77,10 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
     staleTime: 5000,
   });
 
-  // 🔹 Estados e funções para busca
   const [searchResults, setSearchResults] = useState<Product[] | null>(null);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
-  const search = async (query: string) => {
+  const search = useCallback(async (query: string) => {
     if (!query.trim()) {
       setSearchResults(null);
       return;
@@ -97,14 +95,14 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsSearchLoading(false);
     }
-  };
+  }, []);
 
-  const clearSearch = () => setSearchResults(null);
+  const clearSearch = useCallback(() => setSearchResults(null), []);
 
   const [productsByView, setProductsByView] = useState<Product[] | null>(null);
   const [isProductsByViewLoading, setIsProductsByViewLoading] = useState(false);
 
-  const getProductByView = async () => {
+  const getProductByView = useCallback(async () => {
     setIsProductsByViewLoading(true);
     try {
       const data = await fetchProductsByView();
@@ -115,32 +113,47 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsProductsByViewLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     getProductByView();
-  }, []);
+  }, [getProductByView]);
+
+  const contextValue = useMemo(() => ({
+    paginatedProducts,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+    isError,
+    pageSize,
+    setPageSize,
+    searchResults,
+    isSearchLoading,
+    search,
+    clearSearch,
+    productsByView,
+    isProductsByViewLoading,
+    getProductByView,
+  }), [
+    paginatedProducts,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+    isError,
+    pageSize,
+    searchResults,
+    isSearchLoading,
+    search,
+    clearSearch,
+    productsByView,
+    isProductsByViewLoading,
+    getProductByView,
+  ]);
 
   return (
-    <ProductsContext.Provider
-      value={{
-        paginatedProducts,
-        fetchNextPage,
-        hasNextPage,
-        isLoading,
-        isFetchingNextPage,
-        isError,
-        pageSize,
-        setPageSize,
-        searchResults,
-        isSearchLoading,
-        search,
-        clearSearch,
-        productsByView,
-        isProductsByViewLoading,
-        getProductByView,
-      }}
-    >
+    <ProductsContext.Provider value={contextValue}>
       {children}
     </ProductsContext.Provider>
   );
