@@ -70,6 +70,7 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
       return response;
     },
     getNextPageParam: (lastPage) => {
+      if (!lastPage?.meta) return undefined;
       const { currentPage, totalPages } = lastPage.meta;
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
