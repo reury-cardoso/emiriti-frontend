@@ -36,8 +36,11 @@ interface Artisan {
 export function GlobalDrawers() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const productId = searchParams.get('product');
-  const artisanId = searchParams.get('artisan');
+  const rawProductId = searchParams.get('product');
+  const rawArtisanId = searchParams.get('artisan');
+  
+  const productId = rawProductId ? rawProductId.split(':')[0] : null;
+  const artisanId = rawArtisanId ? rawArtisanId.split(':')[0] : null;
 
   const [product, setProduct] = useState<Product | null>(null);
   const [artisan, setArtisan] = useState<Artisan | null>(null);

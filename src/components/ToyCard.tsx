@@ -40,11 +40,15 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
   const isOpen = searchParams.get('product') === paramValue;
 
   const handleOpenChange = (open: boolean) => {
-    if (open) {
-      setSearchParams({ product: paramValue });
-    } else {
-      setSearchParams({});
-    }
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (open) {
+        newParams.set('product', paramValue);
+      } else {
+        newParams.delete('product');
+      }
+      return newParams;
+    });
   };
 
   useEffect(() => {

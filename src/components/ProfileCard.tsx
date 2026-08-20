@@ -1,9 +1,11 @@
 import React from 'react';
-import { ArrowRight, MapPin, X } from 'lucide-react';
+import { ArrowRight, MapPin, X, Share2, Check } from 'lucide-react';
 import { useEffect, useState, useId } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ToyCard } from './ToyCard';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { getArtisanById } from '../services/artisans';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
@@ -49,15 +51,67 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
   const [moreInfo, setMoreInfo] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
 
   // Só abre se o param corresponde a ESTE artesão E ESTA instância
   const isOpen = searchParams.get('artisan') === paramValue;
 
   const handleOpenChange = (open: boolean) => {
-    if (open) {
-      setSearchParams({ artisan: paramValue });
-    } else {
-      setSearchParams({});
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (open) {
+        newParams.set('artisan', paramValue);
+      } else {
+        newParams.delete('artisan');
+      }
+      return newParams;
+    });
+  };
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}${window.location.pathname}?artisan=${id}`;
+    const shareData = {
+      title: `Conheça o trabalho de ${name}`,
+      text: `Veja as peças de miriti feitas por ${name} em Abaetetuba!`,
+      url: url,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        console.log('Erro ao compartilhar:', err);
+      }
+    } 
+    
+    // Tenta usar API moderna de clipboard
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+        return;
+      } catch (err) {
+        console.log('Erro ao copiar (API moderna):', err);
+      }
+    }
+
+    // Fallback antigo para conexões HTTP locais (192.168.x.x)
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      textArea.style.position = 'fixed'; // Evita scroll
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.log('Erro ao copiar (Fallback):', err);
     }
   };
 
@@ -150,7 +204,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
 
               {/* Botão fechar */}
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => handleOpenChange(false)}
                 className='absolute right-4 top-8 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-text-primary/10 transition-colors hover:bg-text-primary/20'
               >
                 <X size={18} className='text-text-primary' />
@@ -162,7 +216,7 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
                   <img
                     src={moreInfo?.photo || photo}
                     alt={name}
-                    className='w-30 h-30 rounded-full object-cover shadow-amazonia'
+                    className='h-[150px] w-[150px] rounded-full object-cover shadow-amazonia md:h-28 md:w-28 mt-[8px]'
                     style={{
                       border: '3px solid transparent',
                       backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #00A86B, #FF6B35)',
@@ -176,54 +230,78 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
                   <MapPin size={16} className='text-amazonia' />
                   <span>{location}</span>
                 </div>
-                {moreInfo?.bio && (
+                {loading ? (
+                  <div className='mt-3 flex w-full max-w-sm flex-col items-center gap-1.5'>
+                    <Skeleton height={20} width='100%' borderRadius={8} />
+                    <Skeleton height={20} width='85%' borderRadius={8} />
+                    <Skeleton height={20} width='60%' borderRadius={8} />
+                  </div>
+                ) : moreInfo?.bio ? (
                   <p className='mt-3 max-w-sm text-center font-secondary text-base leading-relaxed text-text-primary'>
                     {moreInfo.bio}
                   </p>
-                )}
+                ) : null}
               </div>
 
               {/* Botões sociais */}
               <div className='mb-8 flex flex-wrap justify-center gap-2'>
-                {moreInfo?.whatsapp && (
-                  <a
-                    href={`https://wa.me/${moreInfo.whatsapp}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='flex items-center gap-2 rounded-xl bg-whatsapp px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all hover:bg-whatsapp/90 active:scale-95'
-                  >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='18'
-                      height='18'
-                      viewBox='0 0 24 24'
-                      fill='currentColor'
+                {loading ? (
+                  <>
+                    <Skeleton height={44} width={140} borderRadius={12} />
+                    <Skeleton height={44} width={120} borderRadius={12} />
+                    <Skeleton height={44} width={44} borderRadius={12} />
+                  </>
+                ) : (
+                  <>
+                    {moreInfo?.whatsapp && (
+                      <a
+                        href={`https://wa.me/${moreInfo.whatsapp}`}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='flex items-center gap-2 rounded-xl bg-whatsapp px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all hover:bg-whatsapp/90 active:scale-95'
+                      >
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          width='18'
+                          height='18'
+                          viewBox='0 0 24 24'
+                          fill='currentColor'
+                        >
+                          <path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z' />
+                        </svg>
+                        WhatsApp
+                      </a>
+                    )}
+                    {moreInfo?.instagram && (
+                      <a
+                        href={`https://instagram.com/${moreInfo.instagram}`}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all active:scale-95'
+                        style={{ background: 'linear-gradient(135deg, #E1306C, #FD1D1D, #F77737)' }}
+                      >
+                        Instagram
+                      </a>
+                    )}
+                    {moreInfo?.facebook && (
+                      <a
+                        href={`https://facebook.com/${moreInfo.facebook}`}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='flex items-center gap-2 rounded-xl bg-[#1877F2] px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all hover:bg-[#1877F2]/90 active:scale-95'
+                      >
+                        Facebook
+                      </a>
+                    )}
+                    <button
+                      onClick={handleShare}
+                      className='flex items-center justify-center rounded-xl bg-gray-100 px-3 py-2.5 text-text-primary shadow-card transition-all hover:bg-gray-200 active:scale-95'
+                      aria-label='Compartilhar perfil'
+                      title='Compartilhar'
                     >
-                      <path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z' />
-                    </svg>
-                    WhatsApp
-                  </a>
-                )}
-                {moreInfo?.instagram && (
-                  <a
-                    href={`https://instagram.com/${moreInfo.instagram}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all active:scale-95'
-                    style={{ background: 'linear-gradient(135deg, #E1306C, #FD1D1D, #F77737)' }}
-                  >
-                    Instagram
-                  </a>
-                )}
-                {moreInfo?.facebook && (
-                  <a
-                    href={`https://facebook.com/${moreInfo.facebook}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='flex items-center gap-2 rounded-xl bg-[#1877F2] px-5 py-2.5 text-sm font-semibold text-white shadow-card transition-all hover:bg-[#1877F2]/90 active:scale-95'
-                  >
-                    Facebook
-                  </a>
+                      {isCopied ? <Check size={18} className='text-amazonia' /> : <Share2 size={18} />}
+                    </button>
+                  </>
                 )}
               </div>
 
