@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, X, Package, Users, LogIn } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { searchAll } from '../services/search';
 import { SearchProductCard } from './SearchProductCard';
 import { SearchArtisanCard } from './SearchArtisanCard';

@@ -40,7 +40,7 @@ export function SearchBar() {
   const [showResults, setShowResults] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

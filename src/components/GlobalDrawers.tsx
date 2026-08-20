@@ -17,19 +17,6 @@ interface Product {
   artisan: { id: string; name: string; photo: string; whatsapp: string };
 }
 
-interface Artisan {
-  id: string;
-  name: string;
-  photo: string;
-  location: string;
-  bio: string;
-  whatsapp: string;
-  instagram: string;
-  facebook: string;
-  createdAt: string;
-  products: Product[];
-}
-
 export function GlobalDrawers() {
   const [searchParams] = useSearchParams();
   const rawProductId = searchParams.get('product');

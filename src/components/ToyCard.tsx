@@ -3,7 +3,7 @@ import { useState, useEffect, useId } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ImageZoom } from './ImageZoom';
-import { X, ChevronRight, Share2, Check, MessageCircle, ArrowRight } from 'lucide-react';
+import { X, Share2, Check, MessageCircle, ArrowRight } from 'lucide-react';
 import { getProductsByArtisan } from '../services/artisans';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -32,7 +32,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
   const paramValue = `${product.id}:${instanceId}`;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
+  
   const [moreProducts, setMoreProducts] = useState<{ src: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -125,7 +125,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
           );
           setError(null);
         })
-        .catch((err) => {
+        .catch((_err) => {
           setError('Failed to load products');
         })
         .finally(() => {

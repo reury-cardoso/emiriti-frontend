@@ -6,7 +6,7 @@ import { ToyCard } from '../components/ToyCard';
 import { useProducts } from '../context/ProductsContext';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import svgAnimate from '../assets/ring-resize-white-36.svg';
+
 
 const MemoizedToyCard = React.memo(ToyCard);
 
