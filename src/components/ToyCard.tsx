@@ -186,9 +186,9 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
               {/* Botão fechar */}
               <button
                 onClick={() => handleOpenChange(false)}
-                className='absolute right-4 top-8 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-text-primary/10 transition-colors hover:bg-text-primary/20'
+                className='absolute right-4 top-10 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-text-primary/10 transition-colors hover:bg-text-primary/20'
               >
-                <X size={18} className='text-text-primary' />
+                <X size={18} className='text-border' />
               </button>
 
               {/* Galeria de imagens */}
