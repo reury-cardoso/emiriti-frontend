@@ -46,7 +46,15 @@ export const SearchArtisanCard = React.memo(function SearchArtisanCard({ artisan
     >
       {/* Photo */}
       <div className='relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full'>
-        <img src={artisan.photo} alt={artisan.name} className='h-full w-full object-cover' loading='lazy' />
+        <img
+          src={artisan.photo}
+          alt={artisan.name}
+          className='h-full w-full object-cover'
+          loading='lazy'
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(artisan.name)}&backgroundColor=00A86B&textColor=ffffff`;
+          }}
+        />
       </div>
 
       {/* Content */}

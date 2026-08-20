@@ -37,6 +37,7 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
             src={oneBanner ? activeBanner?.[oneBanner] : activeBanner?.urlMain}
             alt='Banner principal'
             onLoad={() => setMainLoaded(true)}
+            onError={() => setMainLoaded(true)}
           />
         </div>
 
@@ -50,6 +51,7 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
                 src={activeBanner?.urlSecondary}
                 alt='Banner secundário'
                 onLoad={() => setSecondaryLoaded(true)}
+                onError={() => setSecondaryLoaded(true)}
               />
             </div>
 
@@ -60,6 +62,7 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
                 src={activeBanner?.urlTertiary}
                 alt='Banner terciário'
                 onLoad={() => setTertiaryLoaded(true)}
+                onError={() => setTertiaryLoaded(true)}
               />
             </div>
           </div>

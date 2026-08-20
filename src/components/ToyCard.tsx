@@ -80,8 +80,8 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
       } catch (err) {
         console.log('Erro ao compartilhar:', err);
       }
-    } 
-    
+    }
+
     if (navigator.clipboard && window.isSecureContext) {
       try {
         await navigator.clipboard.writeText(url);

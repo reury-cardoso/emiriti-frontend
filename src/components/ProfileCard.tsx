@@ -158,7 +158,14 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
       <div className='flex w-full overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-200 hover:shadow-md'>
         {/* Foto do artesão */}
         <div className='relative w-24 flex-shrink-0 self-stretch'>
-          <img src={photo} alt={name} className='h-full w-full object-cover' />
+          <img
+            src={photo}
+            alt={name}
+            className='h-full w-full object-cover'
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=00A86B&textColor=ffffff`;
+            }}
+          />
         </div>
 
         {/* Conteúdo do card */}
@@ -246,6 +253,9 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
                         backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #00A86B, #FF6B35)',
                         backgroundOrigin: 'border-box',
                         backgroundClip: 'padding-box, border-box',
+                      }}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(moreInfo?.name || name)}&backgroundColor=00A86B&textColor=ffffff`;
                       }}
                     />
                   )}
