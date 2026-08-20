@@ -18,7 +18,7 @@ export default function PageHome() {
   const { artisans, isLoading: isArtisansLoading } = useArtisans();
   const { productsByView, paginatedProducts, isLoading: isProductsLoading } = useProducts();
 
-  const products = useMemo(() => paginatedProducts?.pages.flatMap((page) => page.data) || [], [paginatedProducts]);
+  const products = useMemo(() => paginatedProducts?.pages.flatMap((page: any) => page.data) || [], [paginatedProducts]);
 
   const randomArtisans = useMemo(() => {
     return [...artisans].sort(() => Math.random() - 0.5).slice(0, 4);
@@ -79,7 +79,7 @@ export default function PageHome() {
           ) : (
             productsByView
               ?.slice(0, 4)
-              .map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)
+              .map((product: any, index: number) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)
           )}
         </div>
       </section>

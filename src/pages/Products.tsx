@@ -32,10 +32,7 @@ export default function PageProducts() {
       </div>
     );
 
-  const products = useMemo(
-    () => (paginatedProducts?.pages ? paginatedProducts.pages.flatMap((page) => page.data) : []),
-    [paginatedProducts],
-  );
+  const products = useMemo(() => paginatedProducts?.pages.flatMap((page: any) => page.data) || [], [paginatedProducts]);
 
   return (
     <div className='animate-fade-in'>
@@ -77,7 +74,7 @@ export default function PageProducts() {
                   </div>
                 </div>
               ))
-            : products.map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)}
+            : products.map((product: any, index: number) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)}
         </div>
 
         {isFetchingNextPage && (

@@ -60,7 +60,7 @@ export default function PageArtisans() {
                   </div>
                 </div>
               ))
-            : artisans.map((artisan) => (
+            : artisans.map((artisan: any) => (
                 <MemoizedProfileCard
                   key={artisan.id}
                   id={artisan.id}
