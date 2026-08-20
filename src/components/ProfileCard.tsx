@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, MapPin, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useId } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ToyCard } from './ToyCard';
@@ -41,16 +41,21 @@ interface Profile {
 }
 
 export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, location }: Artisan) {
+  const rawId = useId();
+  const instanceId = rawId.replace(/[^a-zA-Z0-9]/g, '');
+  const paramValue = `${id}:${instanceId}`;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [moreInfo, setMoreInfo] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isOpen = searchParams.get('artisan') === id;
+  // Só abre se o param corresponde a ESTE artesão E ESTA instância
+  const isOpen = searchParams.get('artisan') === paramValue;
 
   const handleOpenChange = (open: boolean) => {
     if (open) {
-      setSearchParams({ artisan: id });
+      setSearchParams({ artisan: paramValue });
     } else {
       setSearchParams({});
     }

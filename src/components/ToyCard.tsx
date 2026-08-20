@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ImageZoom } from './ImageZoom';
@@ -25,17 +25,23 @@ interface ProductProps {
 }
 
 export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
+  const rawId = useId();
+  // useId pode conter caracteres especiais como ':', sanitiza para uso na URL
+  const instanceId = rawId.replace(/[^a-zA-Z0-9]/g, '');
+  const paramValue = `${product.id}:${instanceId}`;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const [moreProducts, setMoreProducts] = useState<{ src: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isOpen = searchParams.get('product') === product.id;
+  // Só abre se o param da URL corresponde a ESTE produto E ESTA instância
+  const isOpen = searchParams.get('product') === paramValue;
 
   const handleOpenChange = (open: boolean) => {
     if (open) {
-      setSearchParams({ product: product.id });
+      setSearchParams({ product: paramValue });
     } else {
       setSearchParams({});
     }
