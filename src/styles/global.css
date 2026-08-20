@@ -131,4 +131,5 @@ svg {
   background-image: linear-gradient(90deg, #f7fafc 0%, rgba(0, 168, 107, 0.08) 50%, #f7fafc 100%) !important;
   background-size: 200% 100% !important;
   animation: shimmer 1.5s linear infinite !important;
+  line-height: unset !important;
 }

@@ -31,7 +31,7 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
       <div className='flex flex-col gap-4'>
         {/* Banner Principal */}
         <div className='relative overflow-hidden rounded-xl'>
-          {!mainLoaded && <Skeleton height={200} borderRadius={12} />}
+          {!mainLoaded && <Skeleton height={140} borderRadius={12} />}
           <img
             className={`pointer-events-none w-full select-none rounded-xl object-cover ${mainLoaded ? '' : 'hidden'}`}
             src={oneBanner ? activeBanner?.[oneBanner] : activeBanner?.urlMain}
@@ -44,7 +44,7 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
         {!oneBanner && (
           <div className='grid grid-cols-2 gap-4'>
             <div className='relative overflow-hidden rounded-xl'>
-              {!secondaryLoaded && <Skeleton height={134} borderRadius={12} />}
+              {!secondaryLoaded && <Skeleton height={124} borderRadius={12} />}
               <img
                 className={`pointer-events-none w-full select-none rounded-xl object-cover ${secondaryLoaded ? '' : 'hidden'}`}
                 src={activeBanner?.urlSecondary}
@@ -54,7 +54,7 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
             </div>
 
             <div className='relative overflow-hidden rounded-xl'>
-              {!tertiaryLoaded && <Skeleton height={134} borderRadius={12} />}
+              {!tertiaryLoaded && <Skeleton height={124} borderRadius={12} />}
               <img
                 className={`pointer-events-none w-full select-none rounded-xl object-cover ${tertiaryLoaded ? '' : 'hidden'}`}
                 src={activeBanner?.urlTertiary}

@@ -43,16 +43,19 @@ export default function PageArtisans() {
             ? Array.from({ length: 4 }).map((_, idx) => (
                 <div
                   key={`skeleton-${idx}`}
-                  className='flex w-full overflow-hidden rounded-lg border border-border bg-card p-0 shadow-card'
+                  className='flex w-full overflow-hidden rounded-xl bg-white shadow-sm'
                 >
-                  <Skeleton height={96} width={80} borderRadius={0} />
-                  <div className='flex flex-1 flex-col gap-2 p-3'>
-                    <Skeleton height={18} width='70%' borderRadius={8} />
-                    <Skeleton height={14} width='50%' borderRadius={8} />
-                    <Skeleton height={20} width='60%' borderRadius={12} />
-                    <div className='mt-1 flex gap-2'>
-                      <Skeleton height={40} width={40} circle />
-                      <Skeleton height={40} className='flex-1' borderRadius={12} />
+                  <div className='w-24 flex-shrink-0'>
+                    <Skeleton height={120} borderRadius={0} className='h-full' />
+                  </div>
+                  <div className='flex flex-1 flex-col justify-between p-3'>
+                    <div className='space-y-1'>
+                      <Skeleton height={20} width='70%' borderRadius={8} />
+                      <Skeleton height={16} width='50%' borderRadius={8} />
+                    </div>
+                    <div className='mt-2 flex gap-2'>
+                      <Skeleton height={36} width={36} circle />
+                      <Skeleton height={36} className='flex-1' borderRadius={12} />
                     </div>
                   </div>
                 </div>

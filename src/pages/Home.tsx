@@ -7,14 +7,16 @@ import { useArtisans } from '../context/ArtisansContext';
 import { useProducts } from '../context/ProductsContext';
 import { useMemo } from 'react';
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const MemoizedToyCard = React.memo(ToyCard);
 const MemoizedProfileCard = React.memo(ProfileCard);
 
 export default function PageHome() {
   const navigate = useNavigate();
-  const { artisans } = useArtisans();
-  const { productsByView, paginatedProducts } = useProducts();
+  const { artisans, isLoading: isArtisansLoading } = useArtisans();
+  const { productsByView, paginatedProducts, isLoading: isProductsLoading } = useProducts();
 
   const products = useMemo(() => paginatedProducts?.pages.flatMap((page) => page.data) || [], [paginatedProducts]);
 
@@ -39,7 +41,22 @@ export default function PageHome() {
         </div>
 
         <div>
-          <ProductCarousel products={products.slice(0, 8)} />
+          {isProductsLoading ? (
+            <div className='grid grid-cols-2 gap-4 pb-[28px]'>
+              {Array.from({ length: 2 }).map((_, idx) => (
+                <div key={`skeleton-brinquedos-${idx}`} className='overflow-hidden rounded-xl bg-white shadow-sm'>
+                  <Skeleton height={180} borderRadius={0} />
+                  <div className='space-y-2 p-3'>
+                    <Skeleton height={20} width='80%' borderRadius={8} />
+                    <Skeleton height={16} width='60%' borderRadius={8} />
+                    <Skeleton height={36} borderRadius={12} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <ProductCarousel products={products.slice(0, 8)} />
+          )}
         </div>
       </section>
 
@@ -47,10 +64,23 @@ export default function PageHome() {
       <section className='mx-auto w-[90%] pb-6 pt-2'>
         <h2 className='pb-4 text-2xl font-bold text-text-primary'>Mais Populares</h2>
 
-        <div className='grid grid-cols-2 gap-4'>
-          {productsByView
-            ?.slice(0, 4)
-            .map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)}
+        <div className='grid grid-cols-2 gap-4 lg:grid-cols-4'>
+          {isProductsLoading ? (
+            Array.from({ length: 4 }).map((_, idx) => (
+              <div key={`skeleton-populares-${idx}`} className='overflow-hidden rounded-xl bg-white shadow-sm'>
+                <Skeleton height={180} borderRadius={0} />
+                <div className='space-y-2 p-3'>
+                  <Skeleton height={20} width='80%' borderRadius={8} />
+                  <Skeleton height={16} width='60%' borderRadius={8} />
+                  <Skeleton height={36} borderRadius={12} />
+                </div>
+              </div>
+            ))
+          ) : (
+            productsByView
+              ?.slice(0, 4)
+              .map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)
+          )}
         </div>
       </section>
 
@@ -66,16 +96,39 @@ export default function PageHome() {
           </button>
         </div>
 
-        <div className='flex flex-col gap-4'>
-          {randomArtisans.map((artisan) => (
-            <MemoizedProfileCard
-              key={artisan.id}
-              id={artisan.id}
-              name={artisan.name}
-              location={artisan.location}
-              photo={artisan.photo}
-            />
-          ))}
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+          {isArtisansLoading ? (
+            Array.from({ length: 4 }).map((_, idx) => (
+              <div
+                key={`skeleton-artisan-${idx}`}
+                className='flex w-full overflow-hidden rounded-xl bg-white shadow-sm'
+              >
+                <div className='w-24 flex-shrink-0'>
+                  <Skeleton height={120} borderRadius={0} className='h-full' />
+                </div>
+                <div className='flex flex-1 flex-col justify-between p-3'>
+                  <div className='space-y-1'>
+                    <Skeleton height={20} width='70%' borderRadius={8} />
+                    <Skeleton height={16} width='50%' borderRadius={8} />
+                  </div>
+                  <div className='mt-2 flex gap-2'>
+                    <Skeleton height={36} width={36} circle />
+                    <Skeleton height={36} className='flex-1' borderRadius={12} />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            randomArtisans.map((artisan) => (
+              <MemoizedProfileCard
+                key={artisan.id}
+                id={artisan.id}
+                name={artisan.name}
+                location={artisan.location}
+                photo={artisan.photo}
+              />
+            ))
+          )}
         </div>
       </section>
     </div>

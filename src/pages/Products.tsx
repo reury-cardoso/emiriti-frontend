@@ -45,7 +45,18 @@ export default function PageProducts() {
         </div>
         <div>
           {isLoading ? (
-            <Skeleton height={200} borderRadius={12} />
+            <div className='grid grid-cols-2 gap-4 pb-[28px]'>
+              {Array.from({ length: 2 }).map((_, idx) => (
+                <div key={`skeleton-brinquedos-${idx}`} className='overflow-hidden rounded-xl bg-white shadow-sm'>
+                  <Skeleton height={180} borderRadius={0} />
+                  <div className='space-y-2 p-3'>
+                    <Skeleton height={20} width='80%' borderRadius={8} />
+                    <Skeleton height={16} width='60%' borderRadius={8} />
+                    <Skeleton height={36} borderRadius={12} />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
             <ProductCarousel products={productsByView || []} />
           )}
@@ -57,11 +68,13 @@ export default function PageProducts() {
         <div className='grid grid-cols-2 gap-4'>
           {isLoading
             ? Array.from({ length: 6 }).map((_, idx) => (
-                <div key={`skeleton-${idx}`} className='space-y-3'>
-                  <Skeleton height={180} borderRadius={12} />
-                  <Skeleton height={20} width='80%' borderRadius={8} />
-                  <Skeleton height={16} width='60%' borderRadius={8} />
-                  <Skeleton height={40} borderRadius={12} />
+                <div key={`skeleton-${idx}`} className='overflow-hidden rounded-xl bg-white shadow-sm'>
+                  <Skeleton height={180} borderRadius={0} />
+                  <div className='space-y-2 p-3'>
+                    <Skeleton height={20} width='80%' borderRadius={8} />
+                    <Skeleton height={16} width='60%' borderRadius={8} />
+                    <Skeleton height={36} borderRadius={12} />
+                  </div>
                 </div>
               ))
             : products.map((product, index) => <MemoizedToyCard key={`${product.id}-${index}`} product={product} />)}
