@@ -53,8 +53,8 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
   const [error, setError] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
 
-  // Só abre se o param corresponde a ESTE artesão E ESTA instância
-  const isOpen = searchParams.get('artisan') === paramValue;
+  const urlParam = searchParams.get('artisan');
+  const isOpen = urlParam === paramValue || urlParam === id;
 
   const handleOpenChange = (open: boolean) => {
     setSearchParams((prev) => {
@@ -67,6 +67,20 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
       return newParams;
     });
   };
+
+  useEffect(() => {
+    // Se a URL veio com o ID cru (compartilhamento externo), a primeira instância de ProfileCard que renderizar captura a URL para si mesma.
+    if (isOpen && urlParam === id) {
+      setSearchParams(
+        (prev) => {
+          const p = new URLSearchParams(prev);
+          p.set('artisan', paramValue);
+          return p;
+        },
+        { replace: true }
+      );
+    }
+  }, [isOpen, urlParam, id, paramValue, setSearchParams]);
 
   const handleShare = async () => {
     const url = `${window.location.origin}${window.location.pathname}?artisan=${id}`;
@@ -213,22 +227,38 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
               {/* Header do perfil */}
               <div className='mb-6 flex flex-col items-center'>
                 <div className='relative'>
-                  <img
-                    src={moreInfo?.photo || photo}
-                    alt={name}
-                    className='h-[150px] w-[150px] rounded-full object-cover shadow-amazonia md:h-28 md:w-28 mt-[8px]'
-                    style={{
-                      border: '3px solid transparent',
-                      backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #00A86B, #FF6B35)',
-                      backgroundOrigin: 'border-box',
-                      backgroundClip: 'padding-box, border-box',
-                    }}
-                  />
+                  {loading && !moreInfo?.photo && !photo ? (
+                    <Skeleton circle height={150} width={150} className='mt-[8px] md:h-28 md:w-28 shadow-amazonia' />
+                  ) : (
+                    <img
+                      src={moreInfo?.photo || photo}
+                      alt={moreInfo?.name || name}
+                      className='h-[150px] w-[150px] rounded-full object-cover shadow-amazonia md:h-28 md:w-28 mt-[8px]'
+                      style={{
+                        border: '3px solid transparent',
+                        backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #00A86B, #FF6B35)',
+                        backgroundOrigin: 'border-box',
+                        backgroundClip: 'padding-box, border-box',
+                      }}
+                    />
+                  )}
                 </div>
-                <h1 className='mt-4 text-center text-3xl font-bold text-text-primary'>{name}</h1>
+
+                {loading && !moreInfo?.name && !name ? (
+                  <Skeleton height={36} width={240} className='mt-4' borderRadius={8} />
+                ) : (
+                  <h1 className='mt-4 text-center text-3xl font-bold text-text-primary'>{moreInfo?.name || name}</h1>
+                )}
+
                 <div className='mt-1 flex items-center gap-1.5 text-sm text-text-secondary'>
-                  <MapPin size={16} className='text-amazonia' />
-                  <span>{location}</span>
+                  {loading && !moreInfo?.location && !location ? (
+                    <Skeleton height={20} width={120} borderRadius={6} />
+                  ) : (
+                    <>
+                      <MapPin size={16} className='text-amazonia' />
+                      <span>{moreInfo?.location || location}</span>
+                    </>
+                  )}
                 </div>
                 {loading ? (
                   <div className='mt-3 flex w-full max-w-sm flex-col items-center gap-1.5'>

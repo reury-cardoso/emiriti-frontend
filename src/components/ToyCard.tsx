@@ -3,7 +3,7 @@ import { useState, useEffect, useId } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ImageZoom } from './ImageZoom';
-import { ArrowRight, MessageCircle, X } from 'lucide-react';
+import { X, ChevronRight, Share2, Check, MessageCircle, ArrowRight } from 'lucide-react';
 import { getProductsByArtisan } from '../services/artisans';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { DialogTitle, DialogDescription } from '@radix-ui/react-dialog';
@@ -35,9 +35,10 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
   const [moreProducts, setMoreProducts] = useState<{ src: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
 
-  // Só abre se o param da URL corresponde a ESTE produto E ESTA instância
-  const isOpen = searchParams.get('product') === paramValue;
+  const urlParam = searchParams.get('product');
+  const isOpen = urlParam === paramValue || urlParam === product.id;
 
   const handleOpenChange = (open: boolean) => {
     setSearchParams((prev) => {
@@ -49,6 +50,64 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
       }
       return newParams;
     });
+  };
+
+  useEffect(() => {
+    if (isOpen && urlParam === product.id) {
+      setSearchParams(
+        (prev) => {
+          const p = new URLSearchParams(prev);
+          p.set('product', paramValue);
+          return p;
+        },
+        { replace: true }
+      );
+    }
+  }, [isOpen, urlParam, product.id, paramValue, setSearchParams]);
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}${window.location.pathname}?product=${product.id}`;
+    const shareData = {
+      title: `Veja este brinquedo de miriti: ${product.name}`,
+      text: `Olha que legal o ${product.name} feito de miriti em Abaetetuba!`,
+      url: url,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        console.log('Erro ao compartilhar:', err);
+      }
+    } 
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+        return;
+      } catch (err) {
+        console.log('Erro ao copiar (API moderna):', err);
+      }
+    }
+
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.log('Erro ao copiar (Fallback):', err);
+    }
   };
 
   useEffect(() => {
@@ -147,9 +206,19 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
               <div className='mb-6 space-y-3'>
                 <div className='flex items-start justify-between gap-3'>
                   <h3 className='flex-1 text-2xl font-bold text-text-primary'>{product.name}</h3>
-                  <span className='whitespace-nowrap rounded-xl bg-amazonia-light px-3 py-1.5 text-xs font-medium text-amazonia'>
-                    Feito à mão
-                  </span>
+                  <div className='flex flex-col items-end gap-2'>
+                    <button
+                      onClick={handleShare}
+                      className='flex items-center justify-center rounded-full bg-gray-100 p-2 text-text-primary transition-all hover:bg-gray-200 active:scale-95'
+                      aria-label='Compartilhar produto'
+                      title='Compartilhar'
+                    >
+                      {isCopied ? <Check size={16} className='text-amazonia' /> : <Share2 size={16} />}
+                    </button>
+                    <span className='whitespace-nowrap rounded-xl bg-amazonia-light px-3 py-1.5 text-xs font-medium text-amazonia'>
+                      Feito à mão
+                    </span>
+                  </div>
                 </div>
                 <p className='text-4xl font-bold text-amazonia'>
                   {product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
