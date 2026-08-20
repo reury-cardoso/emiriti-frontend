@@ -28,12 +28,12 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
 
   return (
     <section className='mx-auto w-[90%] py-6'>
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col md:flex-row gap-4'>
         {/* Banner Principal */}
-        <div className='relative overflow-hidden rounded-xl'>
-          {!mainLoaded && <Skeleton height={140} borderRadius={12} />}
+        <div className={`relative overflow-hidden rounded-xl w-full h-[140px] md:h-[160px] lg:h-[200px] ${oneBanner ? '' : 'md:w-1/2'}`}>
+          {!mainLoaded && <Skeleton height='100%' containerClassName='h-full flex' style={{ height: '100%' }} borderRadius={12} />}
           <img
-            className={`pointer-events-none w-full select-none rounded-xl object-cover ${mainLoaded ? '' : 'hidden'}`}
+            className={`pointer-events-none h-full w-full select-none rounded-xl object-cover ${mainLoaded ? '' : 'hidden'}`}
             src={oneBanner ? activeBanner?.[oneBanner] : activeBanner?.urlMain}
             alt='Banner principal'
             onLoad={() => setMainLoaded(true)}
@@ -43,11 +43,11 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
 
         {/* Banners secundários */}
         {!oneBanner && (
-          <div className='grid grid-cols-2 gap-4'>
-            <div className='relative overflow-hidden rounded-xl'>
-              {!secondaryLoaded && <Skeleton height={124} borderRadius={12} />}
+          <div className='flex gap-4 w-full md:w-1/2'>
+            <div className='relative overflow-hidden rounded-xl w-1/2 h-[124px] md:h-[160px] lg:h-[200px]'>
+              {!secondaryLoaded && <Skeleton height='100%' containerClassName='h-full flex' style={{ height: '100%' }} borderRadius={12} />}
               <img
-                className={`pointer-events-none w-full select-none rounded-xl object-cover ${secondaryLoaded ? '' : 'hidden'}`}
+                className={`pointer-events-none h-full w-full select-none rounded-xl object-cover ${secondaryLoaded ? '' : 'hidden'}`}
                 src={activeBanner?.urlSecondary}
                 alt='Banner secundário'
                 onLoad={() => setSecondaryLoaded(true)}
@@ -55,10 +55,10 @@ export function Banners({ oneBanner }: { oneBanner?: string }) {
               />
             </div>
 
-            <div className='relative overflow-hidden rounded-xl'>
-              {!tertiaryLoaded && <Skeleton height={124} borderRadius={12} />}
+            <div className='relative overflow-hidden rounded-xl w-1/2 h-[124px] md:h-[160px] lg:h-[200px]'>
+              {!tertiaryLoaded && <Skeleton height='100%' containerClassName='h-full flex' style={{ height: '100%' }} borderRadius={12} />}
               <img
-                className={`pointer-events-none w-full select-none rounded-xl object-cover ${tertiaryLoaded ? '' : 'hidden'}`}
+                className={`pointer-events-none h-full w-full select-none rounded-xl object-cover ${tertiaryLoaded ? '' : 'hidden'}`}
                 src={activeBanner?.urlTertiary}
                 alt='Banner terciário'
                 onLoad={() => setTertiaryLoaded(true)}

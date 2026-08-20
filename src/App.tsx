@@ -8,7 +8,7 @@ function App() {
     <ArtisansProvider>
       <ProductsProvider>
         <BannersProvider>
-          <main className='w-screen bg-[#FAFAFA] pb-[5.4rem]'>
+          <main className='w-screen min-h-screen bg-[#FAFAFA] pb-[5.4rem] md:pb-0'>
             <Router />
           </main>
         </BannersProvider>

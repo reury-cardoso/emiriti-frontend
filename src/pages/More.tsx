@@ -1,8 +1,9 @@
 export default function PageMore() {
   return (
     <div className='animate-fade-in'>
-      {/* Sobre o Projeto */}
-      <section className='mx-auto mt-6 w-[90%] rounded-lg border border-amazonia/10 bg-amazonia-light p-5'>
+      <div className='mx-auto mt-6 w-[90%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        {/* Sobre o Projeto */}
+        <section className='rounded-lg border border-amazonia/10 bg-amazonia-light p-5 h-fit'>
         <div className='mb-3 flex items-center gap-2'>
           <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path
@@ -25,7 +26,7 @@ export default function PageMore() {
       </section>
 
       {/* Fale Conosco */}
-      <section className='mx-auto mt-4 w-[90%] rounded-lg bg-card p-5 shadow-card'>
+      <section className='rounded-lg bg-card p-5 shadow-card h-fit'>
         <h2 className='mb-4 text-xl font-bold text-text-primary'>Fale Conosco</h2>
         <div className='flex flex-col gap-3'>
           <a
@@ -65,7 +66,7 @@ export default function PageMore() {
       </section>
 
       {/* Configurações */}
-      <section className='mx-auto mt-4 w-[90%] rounded-lg bg-card p-5 shadow-card'>
+      <section className='rounded-lg bg-card p-5 shadow-card h-fit'>
         <h2 className='mb-4 text-xl font-bold text-text-primary'>Configurações</h2>
         <div className='flex flex-col gap-4'>
           <div className='flex items-center justify-between border-b border-border py-2'>
@@ -93,6 +94,8 @@ export default function PageMore() {
           </div>
         </div>
       </section>
+
+      </div>
 
       {/* Footer */}
       <div className='mx-auto mt-6 w-[90%] pb-4 text-center'>

@@ -119,7 +119,7 @@ export function SearchBar() {
       )}
 
       <div
-        className='relative flex h-20 w-screen items-center border-b border-border bg-card px-5 py-4'
+        className='relative md:hidden flex h-20 w-screen items-center border-b border-border bg-card px-5 py-4'
         ref={searchRef}
       >
         <div className='relative w-full'>

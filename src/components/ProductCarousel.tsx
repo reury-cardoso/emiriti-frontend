@@ -28,6 +28,10 @@ function ProductCarousel({ products }: ProductCarouselProps) {
       <Swiper
         slidesPerView={2}
         spaceBetween={16}
+        breakpoints={{
+          640: { slidesPerView: 3, spaceBetween: 20 },
+          1024: { slidesPerView: 4, spaceBetween: 24 },
+        }}
         navigation={false}
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination]}

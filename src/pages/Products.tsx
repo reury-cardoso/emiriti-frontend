@@ -65,7 +65,7 @@ export default function PageProducts() {
 
       <section className='mx-auto w-[90%] pb-6 pt-2'>
         <h2 className='pb-4 text-2xl font-bold text-text-primary'>Todos os Produtos</h2>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6'>
           {isLoading
             ? Array.from({ length: 6 }).map((_, idx) => (
                 <div key={`skeleton-${idx}`} className='overflow-hidden rounded-xl bg-white shadow-sm'>

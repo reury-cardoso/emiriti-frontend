@@ -5,6 +5,7 @@ import { Drawer } from 'vaul';
 import { ImageZoom } from './ImageZoom';
 import { X, ChevronRight, Share2, Check, MessageCircle, ArrowRight } from 'lucide-react';
 import { getProductsByArtisan } from '../services/artisans';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { DialogTitle, DialogDescription } from '@radix-ui/react-dialog';
 
@@ -37,6 +38,7 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
   const [error, setError] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
 
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const urlParam = searchParams.get('product');
   const isOpen = urlParam === paramValue || urlParam === product.id;
 
@@ -162,31 +164,40 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
       <Drawer.Root open={isOpen} onOpenChange={handleOpenChange}>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm' />
-          <Drawer.Content className='fixed left-0 right-0 top-10 z-[999] flex h-full flex-col overflow-hidden rounded-t-3xl bg-background outline-none'>
+          <Drawer.Content 
+            className={`fixed z-[999] flex flex-col overflow-hidden bg-background outline-none ${
+              isDesktop 
+                ? 'inset-0 m-auto w-[450px] max-h-[85vh] rounded-3xl shadow-2xl' 
+                : 'left-0 right-0 top-10 h-full rounded-t-3xl'
+            }`}
+          >
             <VisuallyHidden>
               <DialogTitle>Detalhes do Produto</DialogTitle>
               <DialogDescription>Informações detalhadas sobre {product.name}</DialogDescription>
             </VisuallyHidden>
             <div
-              className='relative overflow-y-auto px-4 sm:px-6'
+              className={`relative overflow-y-auto px-4 sm:px-6 ${isDesktop ? 'pt-4 pb-6' : ''}`}
               style={{
-                height: 'calc(100% - 2.5rem)',
+                height: isDesktop ? 'auto' : 'calc(100% - 2.5rem)',
+                maxHeight: isDesktop ? 'calc(85vh - 2rem)' : 'none',
                 scrollbarWidth: 'thin',
                 scrollbarColor: 'rgba(209, 213, 219, 0.8) transparent',
               }}
             >
-              {/* Header com drag indicator */}
-              <div className='sticky top-0 z-10 flex items-center justify-center bg-background pb-4 pt-5'>
-                <div className='flex gap-1.5'>
-                  <span className='h-1 w-5 rounded-full bg-gray-300'></span>
-                  <span className='h-1 w-5 rounded-full bg-gray-300'></span>
+              {/* Header com drag indicator (apenas mobile) */}
+              {!isDesktop && (
+                <div className='sticky top-0 z-10 flex items-center justify-center bg-background pb-4 pt-5'>
+                  <div className='flex gap-1.5'>
+                    <span className='h-1 w-5 rounded-full bg-gray-300'></span>
+                    <span className='h-1 w-5 rounded-full bg-gray-300'></span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Botão fechar */}
               <button
                 onClick={() => handleOpenChange(false)}
-                className='absolute right-4 top-10 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-text-primary/10 transition-colors hover:bg-text-primary/20'
+                className={`absolute right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-text-primary/10 transition-colors hover:bg-text-primary/20 ${isDesktop ? 'top-4' : 'top-10'}`}
               >
                 <X size={18} className='text-border' />
               </button>
