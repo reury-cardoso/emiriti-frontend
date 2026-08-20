@@ -206,19 +206,14 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
               <div className='mb-6 space-y-3'>
                 <div className='flex items-start justify-between gap-3'>
                   <h3 className='flex-1 text-2xl font-bold text-text-primary'>{product.name}</h3>
-                  <div className='flex flex-col items-end gap-2'>
-                    <button
-                      onClick={handleShare}
-                      className='flex items-center justify-center rounded-full bg-gray-100 p-2 text-text-primary transition-all hover:bg-gray-200 active:scale-95'
-                      aria-label='Compartilhar produto'
-                      title='Compartilhar'
-                    >
-                      {isCopied ? <Check size={16} className='text-amazonia' /> : <Share2 size={16} />}
-                    </button>
-                    <span className='whitespace-nowrap rounded-xl bg-amazonia-light px-3 py-1.5 text-xs font-medium text-amazonia'>
-                      Feito à mão
-                    </span>
-                  </div>
+                  <button
+                    onClick={handleShare}
+                    className='flex items-center justify-center rounded-full bg-gray-100 p-2 text-text-primary transition-all hover:bg-gray-200 active:scale-95'
+                    aria-label='Compartilhar produto'
+                    title='Compartilhar'
+                  >
+                    {isCopied ? <Check size={16} className='text-amazonia' /> : <Share2 size={16} />}
+                  </button>
                 </div>
                 <p className='text-4xl font-bold text-amazonia'>
                   {product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -268,32 +263,52 @@ export const ToyCard = React.memo(function ToyCard({ product }: ProductProps) {
                 </a>
               )}
 
-              {/* Galeria da Arte */}
-              <div className='mb-6'>
-                <h4 className='mb-4 text-xl font-semibold text-text-primary'>Galeria da Arte</h4>
-                {loading && (
-                  <div className='grid grid-cols-2 gap-3'>
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className='skeleton-shimmer aspect-[4/3] rounded-lg bg-gray-200'></div>
-                    ))}
+              {/* Como Adquirir */}
+              <div className='mb-6 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-amazonia-light/60 to-background'>
+                <div className='border-b border-border/60 px-4 py-3'>
+                  <h4 className='flex items-center gap-2 text-base font-semibold text-text-primary'>
+                    <span className='text-lg'>🛒</span>
+                    Como Adquirir
+                  </h4>
+                </div>
+                <div className='divide-y divide-border/50'>
+                  {/* Passo 1 */}
+                  <div className='flex items-start gap-3 px-4 py-3.5'>
+                    <div className='mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-amazonia text-xs font-bold text-white'>
+                      1
+                    </div>
+                    <div>
+                      <p className='text-sm font-semibold text-text-primary'>Entre em contato</p>
+                      <p className='mt-0.5 text-xs leading-relaxed text-text-secondary'>
+                        Fale diretamente com o artesão pelo WhatsApp para tirar dúvidas ou demonstrar interesse.
+                      </p>
+                    </div>
                   </div>
-                )}
-                {error && <p className='text-sm text-red-500'>{error}</p>}
-                {!loading && !error && (
-                  <div className='grid grid-cols-2 gap-3'>
-                    {moreProducts.map((product, index) => (
-                      <div
-                        key={index}
-                        className='overflow-hidden rounded-lg bg-card shadow-card transition-shadow hover:shadow-card-hover'
-                      >
-                        <img src={product.src} alt={product.name} className='h-32 w-full object-cover' />
-                        <div className='p-2'>
-                          <p className='truncate text-xs font-medium text-text-primary'>{product.name}</p>
-                        </div>
-                      </div>
-                    ))}
+                  {/* Passo 2 */}
+                  <div className='flex items-start gap-3 px-4 py-3.5'>
+                    <div className='mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-amazonia text-xs font-bold text-white'>
+                      2
+                    </div>
+                    <div>
+                      <p className='text-sm font-semibold text-text-primary'>Verifique a disponibilidade</p>
+                      <p className='mt-0.5 text-xs leading-relaxed text-text-secondary'>
+                        Confirme se a peça está disponível em estoque antes de realizar o pedido.
+                      </p>
+                    </div>
                   </div>
-                )}
+                  {/* Passo 3 */}
+                  <div className='flex items-start gap-3 px-4 py-3.5'>
+                    <div className='mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#FF6B35] text-xs font-bold text-white'>
+                      3
+                    </div>
+                    <div>
+                      <p className='text-sm font-semibold text-text-primary'>Encomende se necessário</p>
+                      <p className='mt-0.5 text-xs leading-relaxed text-text-secondary'>
+                        Caso não esteja disponível, muitos artesãos aceitam encomendas personalizadas. Pergunte!
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Footer */}

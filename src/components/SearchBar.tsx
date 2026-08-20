@@ -44,9 +44,15 @@ export function SearchBar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowResults(false);
-      }
+      // Ignora cliques dentro do searchRef
+      if (searchRef.current && searchRef.current.contains(event.target as Node)) return;
+      // Ignora cliques em portais do Vaul (overlays e drawers)
+      const target = event.target as Element;
+      if (target.closest('[data-vaul-overlay]') || target.closest('[data-vaul-drawer]')) return;
+      // Ignora cliques em elementos com z-index alto (drawers abertos)
+      if (target.closest('[role="dialog"]') || target.closest('[data-state]')) return;
+
+      setShowResults(false);
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -61,13 +67,14 @@ export function SearchBar() {
       return;
     }
 
+    setShowResults(true);
+    setLoading(true);
+
     const timer = setTimeout(async () => {
-      setLoading(true);
       try {
         const results = await searchAll(query);
         setProducts(results.products);
         setArtisans(results.artisans);
-        setShowResults(true);
       } catch (error) {
         console.error('Erro ao buscar:', error);
       } finally {
@@ -77,6 +84,19 @@ export function SearchBar() {
 
     return () => clearTimeout(timer);
   }, [query]);
+
+  useEffect(() => {
+    if (showResults) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup caso o componente seja desmontado enquanto a busca está aberta
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showResults]);
 
   const handleClear = () => {
     setQuery('');
@@ -131,8 +151,9 @@ export function SearchBar() {
 
           {/* Results Dropdown */}
           {showResults && (
-            <div className='absolute left-0 right-0 top-full z-50 mt-2 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border border-border bg-card shadow-lg'>
-              {loading ? (
+            <div className='absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-card shadow-lg'>
+              <div className='max-h-[calc(100vh-12.5rem)] overflow-y-auto'>
+                {loading ? (
                 <div className='flex items-center justify-center p-8'>
                   <div className='h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-amazonia'></div>
                 </div>
@@ -201,6 +222,7 @@ export function SearchBar() {
                   <p className='mt-1 text-sm text-text-secondary'>Tente buscar por outro termo</p>
                 </div>
               )}
+              </div>
             </div>
           )}
         </div>

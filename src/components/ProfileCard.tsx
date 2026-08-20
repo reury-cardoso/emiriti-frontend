@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, MapPin, X, Share2, Check } from 'lucide-react';
-import { useEffect, useState, useId } from 'react';
+import { useEffect, useState, useId, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Drawer } from 'vaul';
 import { ToyCard } from './ToyCard';
@@ -53,8 +53,15 @@ export const ProfileCard = React.memo(function ProfileCard({ id, photo, name, lo
   const [error, setError] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsMounted(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
   const urlParam = searchParams.get('artisan');
-  const isOpen = urlParam === paramValue || urlParam === id;
+  const isOpen = isMounted && (urlParam === paramValue || urlParam === id);
 
   const handleOpenChange = (open: boolean) => {
     setSearchParams((prev) => {

@@ -19,13 +19,24 @@ interface SearchArtisanCardProps {
 
 export const SearchArtisanCard = React.memo(function SearchArtisanCard({ artisan }: SearchArtisanCardProps) {
   const [, setSearchParams] = useSearchParams();
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClick = () => {
+    // Cancela qualquer troca pendente anterior
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
-      newParams.set('artisan', artisan.id);
+      newParams.delete('artisan');
       return newParams;
     });
+    timeoutRef.current = setTimeout(() => {
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
+        newParams.set('artisan', artisan.id);
+        return newParams;
+      });
+    }, 150);
   };
 
   return (
